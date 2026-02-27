@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Count time elapsed since any date" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <title>Since When</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Since When</h1>
+      <p class="subtitle">Time elapsed since a date you choose</p>
+    </header>
+
+    <main>
+      <section class="date-picker-section" id="setup">
+        <label for="start-date">Start counting from:</label>
+        <div class="input-row">
+          <input type="datetime-local" id="start-date" />
+          <button id="start-btn">Start</button>
+        </div>
+        <div class="presets">
+          <span class="preset-label">Presets:</span>
+          <button class="preset-btn" data-offset="-1y">1 year ago</button>
+          <button class="preset-btn" data-offset="-30d">30 days ago</button>
+          <button class="preset-btn" data-offset="-7d">1 week ago</button>
+          <button class="preset-btn" data-offset="-1d">Yesterday</button>
+        </div>
+      </section>
+
+      <section class="counter-section hidden" id="counter">
+        <div class="since-label" id="since-label">Since —</div>
+
+        <div class="time-display">
+          <div class="time-block">
+            <span class="time-value" id="years">0</span>
+            <span class="time-unit">years</span>
+          </div>
+          <div class="time-block">
+            <span class="time-value" id="days">0</span>
+            <span class="time-unit">days</span>
+          </div>
+          <div class="time-block">
+            <span class="time-value" id="hours">00</span>
+            <span class="time-unit">hours</span>
+          </div>
+          <div class="time-block">
+            <span class="time-value" id="minutes">00</span>
+            <span class="time-unit">minutes</span>
+          </div>
+          <div class="time-block">
+            <span class="time-value" id="seconds">00</span>
+            <span class="time-unit">seconds</span>
+          </div>
+        </div>
+
+        <div class="total-display">
+          <div class="total-item">
+            <span class="total-value" id="total-days">0</span>
+            <span class="total-unit">total days</span>
+          </div>
+          <div class="total-item">
+            <span class="total-value" id="total-hours">0</span>
+            <span class="total-unit">total hours</span>
+          </div>
+          <div class="total-item">
+            <span class="total-value" id="total-minutes">0</span>
+            <span class="total-unit">total minutes</span>
+          </div>
+        </div>
+
+        <button class="reset-btn" id="reset-btn">Change Date</button>
+      </section>
+    </main>
+
+    <footer>
+      <p>Runs offline &bull; Saves your date automatically</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
