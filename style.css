@@ -124,31 +124,6 @@ button:active {
   opacity: 0.88;
 }
 
-.presets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.preset-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.preset-btn {
-  background: var(--accent2);
-  color: var(--text);
-  padding: 0.35rem 0.75rem;
-  font-size: 0.8rem;
-  border-radius: 6px;
-  opacity: 0.85;
-}
-
-.preset-btn:hover {
-  opacity: 1;
-}
-
 /* --- Counter section --- */
 .counter-section {
   background: var(--surface);

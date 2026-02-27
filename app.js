@@ -22,26 +22,6 @@ const elTotalMinutes = document.getElementById('total-minutes');
 let intervalId = null;
 let startTs = null;
 
-// ---- Preset buttons --------------------------------------------------------
-
-document.querySelectorAll('.preset-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const offset = btn.dataset.offset;
-    const now = new Date();
-    const d = new Date(now);
-
-    const num = parseInt(offset, 10); // negative
-    if (offset.endsWith('y')) {
-      d.setFullYear(d.getFullYear() + num);
-    } else if (offset.endsWith('d')) {
-      d.setDate(d.getDate() + num);
-    }
-
-    // datetime-local input wants "YYYY-MM-DDTHH:MM"
-    startDateInput.value = toLocalDatetimeString(d);
-  });
-});
-
 // ---- Start / reset ---------------------------------------------------------
 
 startBtn.addEventListener('click', () => {
@@ -135,18 +115,13 @@ function toLocalDatetimeString(d) {
 // ---- Restore saved date on load --------------------------------------------
 
 (function init() {
-  // Default input to current local datetime
-  startDateInput.value = toLocalDatetimeString(new Date());
+  startDateInput.value = '2026-02-26T18:30';
 
   const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    const ts = Number(saved);
-    if (!isNaN(ts) && ts > 0) {
-      saveAndStart(ts);
-      return;
-    }
+  const ts = saved ? Number(saved) : new Date('2026-02-26T18:30').getTime();
+  if (!isNaN(ts) && ts > 0) {
+    saveAndStart(ts);
   }
-  showSetup();
 })();
 
 // ---- Service worker registration -------------------------------------------
