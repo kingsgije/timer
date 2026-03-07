@@ -18,23 +18,10 @@
     </header>
 
     <main>
-      <section class="date-picker-section" id="setup">
-        <label for="start-date">Start counting from:</label>
-        <div class="input-row">
-          <input type="datetime-local" id="start-date" />
-          <button id="start-btn">Start</button>
-        </div>
-
-      </section>
-
       <section class="counter-section hidden" id="counter">
         <div class="since-label" id="since-label">Since —</div>
 
         <div class="time-display">
-          <div class="time-block">
-            <span class="time-value" id="years">0</span>
-            <span class="time-unit">years</span>
-          </div>
           <div class="time-block">
             <span class="time-value" id="days">0</span>
             <span class="time-unit">days</span>
@@ -67,13 +54,20 @@
             <span class="total-unit">total minutes</span>
           </div>
         </div>
+      </section>
 
-        <button class="reset-btn" id="reset-btn">Change Date</button>
+      <section class="date-picker-section" id="setup">
+        <label for="start-date">Start counting from:</label>
+        <div class="input-row">
+          <input type="datetime-local" id="start-date" />
+          <button id="start-btn">Start</button>
+        </div>
       </section>
     </main>
 
     <footer>
       <p>Runs offline &bull; Saves your date automatically</p>
+      <span class="version">v1.0</span>
     </footer>
   </div>
 

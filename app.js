@@ -9,7 +9,6 @@ const startBtn       = document.getElementById('start-btn');
 const resetBtn       = document.getElementById('reset-btn');
 const sinceLabel     = document.getElementById('since-label');
 
-const elYears   = document.getElementById('years');
 const elDays    = document.getElementById('days');
 const elHours   = document.getElementById('hours');
 const elMinutes = document.getElementById('minutes');
@@ -58,20 +57,15 @@ function tick() {
 }
 
 function renderElapsed(ms) {
-  const totalSeconds  = Math.floor(ms / 1000);
   const totalMinutes  = Math.floor(ms / 60_000);
   const totalHours    = Math.floor(ms / 3_600_000);
   const totalDays     = Math.floor(ms / 86_400_000);
 
-  // Break into years / remainder-days / hh / mm / ss
-  const years         = Math.floor(totalDays / 365);
-  const remDays       = totalDays - years * 365;
   const hours         = Math.floor((ms % 86_400_000) / 3_600_000);
   const minutes       = Math.floor((ms % 3_600_000) / 60_000);
   const seconds       = Math.floor((ms % 60_000) / 1000);
 
-  elYears.textContent   = years;
-  elDays.textContent    = remDays;
+  elDays.textContent    = totalDays;
   elHours.textContent   = pad(hours);
   elMinutes.textContent = pad(minutes);
   elSeconds.textContent = pad(seconds);
