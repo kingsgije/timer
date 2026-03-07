@@ -1,12 +1,11 @@
 'use strict';
 
-const STORAGE_KEY = 'since-when-start-date';
+const DEFAULT_TS = new Date('2026-02-26T23:30:00Z').getTime(); // Feb 26 2026, 6:30 PM EST
 
-const setupSection  = document.getElementById('setup');
+const setupSection   = document.getElementById('setup');
 const counterSection = document.getElementById('counter');
 const startDateInput = document.getElementById('start-date');
 const startBtn       = document.getElementById('start-btn');
-const resetBtn       = document.getElementById('reset-btn');
 const sinceLabel     = document.getElementById('since-label');
 
 const elDays    = document.getElementById('days');
@@ -19,51 +18,36 @@ const elTotalHours   = document.getElementById('total-hours');
 const elTotalMinutes = document.getElementById('total-minutes');
 
 let intervalId = null;
-let startTs = null;
+let startTs    = null;
 
-// ---- Start / reset ---------------------------------------------------------
+// ---- Start button ----------------------------------------------------------
 
 startBtn.addEventListener('click', () => {
   const val = startDateInput.value;
   if (!val) return;
   const ts = new Date(val).getTime();
   if (isNaN(ts)) return;
-  saveAndStart(ts);
-});
-
-resetBtn.addEventListener('click', () => {
-  clearInterval(intervalId);
-  intervalId = null;
-  startTs = null;
-  localStorage.removeItem(STORAGE_KEY);
-  showSetup();
+  begin(ts);
 });
 
 // ---- Core logic ------------------------------------------------------------
 
-function saveAndStart(ts) {
+function begin(ts) {
+  if (intervalId) clearInterval(intervalId);
   startTs = ts;
-  localStorage.setItem(STORAGE_KEY, String(ts));
   showCounter(ts);
   tick();
   intervalId = setInterval(tick, 1000);
 }
 
 function tick() {
-  if (startTs === null) return;
-  const now = Date.now();
-  const elapsed = Math.max(0, now - startTs);
-  renderElapsed(elapsed);
-}
-
-function renderElapsed(ms) {
-  const totalMinutes  = Math.floor(ms / 60_000);
-  const totalHours    = Math.floor(ms / 3_600_000);
-  const totalDays     = Math.floor(ms / 86_400_000);
-
-  const hours         = Math.floor((ms % 86_400_000) / 3_600_000);
-  const minutes       = Math.floor((ms % 3_600_000) / 60_000);
-  const seconds       = Math.floor((ms % 60_000) / 1000);
+  const elapsed = Math.max(0, Date.now() - startTs);
+  const totalMinutes = Math.floor(elapsed / 60_000);
+  const totalHours   = Math.floor(elapsed / 3_600_000);
+  const totalDays    = Math.floor(elapsed / 86_400_000);
+  const hours        = Math.floor((elapsed % 86_400_000) / 3_600_000);
+  const minutes      = Math.floor((elapsed % 3_600_000) / 60_000);
+  const seconds      = Math.floor((elapsed % 60_000) / 1000);
 
   elDays.textContent    = totalDays;
   elHours.textContent   = pad(hours);
@@ -77,15 +61,9 @@ function renderElapsed(ms) {
 
 // ---- UI helpers ------------------------------------------------------------
 
-function showSetup() {
-  setupSection.classList.remove('hidden');
-  counterSection.classList.add('hidden');
-}
-
 function showCounter(ts) {
   setupSection.classList.add('hidden');
   counterSection.classList.remove('hidden');
-
   const d = new Date(ts);
   sinceLabel.textContent = `Since ${d.toLocaleString(undefined, {
     year: 'numeric', month: 'short', day: 'numeric',
@@ -97,37 +75,20 @@ function pad(n) {
   return String(n).padStart(2, '0');
 }
 
-function toLocalDatetimeString(d) {
-  const yyyy = d.getFullYear();
-  const mm   = pad(d.getMonth() + 1);
-  const dd   = pad(d.getDate());
-  const hh   = pad(d.getHours());
-  const min  = pad(d.getMinutes());
-  return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
-}
+// ---- Auto-start on load ----------------------------------------------------
 
-// ---- Restore saved date on load --------------------------------------------
+startDateInput.value = '2026-02-26T18:30';
+begin(DEFAULT_TS);
 
-(function init() {
-  startDateInput.value = '2026-02-26T18:30';
-
-  const DEFAULT_TS = new Date('2026-02-26T23:30:00Z').getTime(); // 6:30 PM EST
-  const saved = localStorage.getItem(STORAGE_KEY);
-  const ts = saved ? Number(saved) : DEFAULT_TS;
-  if (!isNaN(ts) && ts > 0) {
-    saveAndStart(ts);
-  }
-})();
-
-// ---- Service worker registration -------------------------------------------
+// ---- Service worker --------------------------------------------------------
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     const reg = await navigator.serviceWorker.register('sw.js').catch(() => null);
     if (!reg) return;
-    reg.update(); // check for new version immediately on every load
+    reg.update();
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      window.location.reload(); // reload when new SW takes over
+      window.location.reload();
     });
   });
 }
