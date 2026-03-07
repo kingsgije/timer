@@ -1,4 +1,4 @@
-const CACHE = 'since-when-v1';
+const CACHE = 'since-when-v2';
 const ASSETS = [
   '.',
   'index.html',
@@ -25,8 +25,15 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
+// Network-first: always fetch fresh when online, fall back to cache offline
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
+    fetch(event.request)
+      .then(response => {
+        const clone = response.clone();
+        caches.open(CACHE).then(cache => cache.put(event.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });

@@ -111,8 +111,9 @@ function toLocalDatetimeString(d) {
 (function init() {
   startDateInput.value = '2026-02-26T18:30';
 
+  const DEFAULT_TS = new Date('2026-02-26T23:30:00Z').getTime(); // 6:30 PM EST
   const saved = localStorage.getItem(STORAGE_KEY);
-  const ts = saved ? Number(saved) : new Date('2026-02-26T18:30').getTime();
+  const ts = saved ? Number(saved) : DEFAULT_TS;
   if (!isNaN(ts) && ts > 0) {
     saveAndStart(ts);
   }
@@ -121,7 +122,12 @@ function toLocalDatetimeString(d) {
 // ---- Service worker registration -------------------------------------------
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+  window.addEventListener('load', async () => {
+    const reg = await navigator.serviceWorker.register('sw.js').catch(() => null);
+    if (!reg) return;
+    reg.update(); // check for new version immediately on every load
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload(); // reload when new SW takes over
+    });
   });
 }
